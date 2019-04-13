@@ -11,16 +11,30 @@ MongoClient.connect(connectionURL, {useNewUrlParser: true}, (error, client) =>{
     console.log('Connect correct');
 
     const db = client.db(databaseName);
-    // inserimento di un utente
-    db.collection('users').insertOne({
-        name: 'Luke',
-        lastname : 'Skywalker',
-        age: 22
-    }, (error, result)=>{
+    
+    // all'interno del database 'task-manager' creo una nuova collezione (task) e ci inserisco molti documenti
+    db.collection('task').insertMany([
+        {
+            description: 'Parse CSV',
+            completed: true
+        },
+        {
+            description: 'Arrow function',
+            completed: false
+        },
+        {
+            description: 'Mongo DB',
+            completed: true
+        },
+        {
+            description: 'Mongoose',
+            completed: false
+        },
+    ], (error, result)=>{
         if(error){
-            return console.log('Unable to insert user');
+            return console.log('Unable to insert tasks!')
         }
-        // ops è una matrice di documenti
+        console.log("Connect");
         console.log(result.ops);
     })
 })
