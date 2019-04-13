@@ -5,12 +5,54 @@ const connectionURL = 'mongodb://127.0.0.1:32769';
 const databaseName = 'task-manager';
 
 const id = new ObjectID();
-// Mongo genera un ID univoco con all'itreno alcune informazioni (tra cui un TIMESTAMP) [es. 5cb1d944edddce552cf0b430]
-console.log(id);
-// ottengo il timestamp di quando è stato creato l'ID
-console.log(id.getTimestamp());
 
-// numero di byte dell'ID [12byte]
-console.log(id.id.length);
-// numbero di byte se converto l'ID in STRING [24]
-console.log(id.toHexString().length);
+
+MongoClient.connect(connectionURL, {useNewUrlParser: true}, (error, client) =>{
+    if(error){
+        return console.log('Unable to connect to database!');
+    }
+    console.log('Connect correct');
+
+    const db = client.db(databaseName);
+    // findOne : restitruisce il primo risultato che soddisfa la condizione
+    // primo parametro è un oggetto (con la condizione) il secondo parametro è una funzione
+    db.collection('task').findOne({completed:true}, (error, result)=>{
+        if(error){
+            console.log('Unable Error!');
+        }
+        console.log("Result finOne: ",result);
+    })
+
+    // cercare un task tramite ID - ObjectId("5cb1d64f665d2c548eb9fab1")
+    // return null
+    db.collection('task').findOne({_id: '5cb1d64f665d2c548eb9fab1'}, (error, result)=>{
+        if(error){
+            console.log('Unable Error!');
+        }
+        console.log("Result findOne ID null: ",result);
+    })
+    
+    // result Result:  { _id: 5cb1d64f665d2c548eb9fab1, description: 'Mongoose', completed: false }
+    db.collection('task').findOne({_id: new ObjectID('5cb1d64f665d2c548eb9fab1')}, (error, result)=>{
+        if(error){
+            console.log('Unable Error!');
+        }
+        console.log("Result fonOne ID: ",result);
+    })
+
+    // find : restituisce un cursore (dove all'interno non ci sono solo i dati che si richiedono nella condizione)
+    // tramite toArray convertiamo il contenuto del cursore in array
+    db.collection('task').find({completed:true}).toArray((error, result)=>{
+        if(error){
+            console.log('Unable Error!');
+        }
+        console.log("Result find: ",result);
+    })
+    db.collection('task').find({completed:true}).count((error, result)=>{
+        if(error){
+            console.log('Unable Error!');
+        }
+        console.log("Result count: ",result);
+    })
+
+})
