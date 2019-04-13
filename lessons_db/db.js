@@ -14,45 +14,82 @@ MongoClient.connect(connectionURL, {useNewUrlParser: true}, (error, client) =>{
     console.log('Connect correct');
 
     const db = client.db(databaseName);
-    // findOne : restitruisce il primo risultato che soddisfa la condizione
-    // primo parametro è un oggetto (con la condizione) il secondo parametro è una funzione
-    db.collection('task').findOne({completed:true}, (error, result)=>{
-        if(error){
-            console.log('Unable Error!');
+    
+    // ---------------------
+    // METODO con callback 
+    // ---------------------
+
+    //updateOne(filter, update, options)
+    // updateOne - modificato il primo risultato che soddisfa la condizione (ObjectId) 
+    // db.collection('task').updateOne({
+    //     _id : new ObjectID("5cb1d64f665d2c548eb9fab0")
+    // },{
+    //     $set: {
+    //         completed : false
+    //     }
+    // }, (error, result)=>{
+    //     if(error){
+    //         console.log("Error: ",error);
+    //     }
+    //     console.log("Success: ", result);
+    // })
+
+
+    // ---------------------
+    // METODO con Promises 
+    // ---------------------
+    // Primo step
+    // const updatePromises = db.collection('task').updateOne({
+    //     _id : new ObjectID("5cb1d64f665d2c548eb9fab0")
+    // },{
+    //      // UPDATE operators   
+    //
+    //      // setta il valore inserito nel campo selezionato
+    //     $set: {
+    //         completed : true
+    //     }
+    //  // incrementa il valore
+    //  // $inc: {
+    //  //     age: 1  //age: -1
+    //  // }
+    // });
+    
+    // updatePromises
+    // .then( (result)=>{
+    //     console.log("Update: ", result );
+    // })
+    // .catch((error)=>{
+    //     console.log("Error: ", error);
+    // })
+
+    // Secondo step
+    const updatePromises = db.collection('task').updateOne({
+        _id : new ObjectID("5cb1d64f665d2c548eb9fab0")
+    },{
+        $set: {
+            completed : false
         }
-        console.log("Result finOne: ",result);
+    })
+    .then( (result)=>{
+        console.log("Update: ", result );
+    })
+    .catch((error)=>{
+        console.log("Error: ", error);
     })
 
-    // cercare un task tramite ID - ObjectId("5cb1d64f665d2c548eb9fab1")
-    // return null
-    db.collection('task').findOne({_id: '5cb1d64f665d2c548eb9fab1'}, (error, result)=>{
-        if(error){
-            console.log('Unable Error!');
+
+    const updateManyPromises = db.collection('task').updateMany({
+        completed : false
+    },{
+        $set: {
+            completed : true
         }
-        console.log("Result findOne ID null: ",result);
+    })
+    .then( (result)=>{
+        console.log("Update: ", result.modifiedCount );
+    })
+    .catch((error)=>{
+        console.log("Error: ", error);
     })
     
-    // result Result:  { _id: 5cb1d64f665d2c548eb9fab1, description: 'Mongoose', completed: false }
-    db.collection('task').findOne({_id: new ObjectID('5cb1d64f665d2c548eb9fab1')}, (error, result)=>{
-        if(error){
-            console.log('Unable Error!');
-        }
-        console.log("Result fonOne ID: ",result);
-    })
-
-    // find : restituisce un cursore (dove all'interno non ci sono solo i dati che si richiedono nella condizione)
-    // tramite toArray convertiamo il contenuto del cursore in array
-    db.collection('task').find({completed:true}).toArray((error, result)=>{
-        if(error){
-            console.log('Unable Error!');
-        }
-        console.log("Result find: ",result);
-    })
-    db.collection('task').find({completed:true}).count((error, result)=>{
-        if(error){
-            console.log('Unable Error!');
-        }
-        console.log("Result count: ",result);
-    })
-
 })
