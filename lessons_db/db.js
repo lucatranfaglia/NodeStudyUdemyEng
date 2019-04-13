@@ -11,6 +11,7 @@ MongoClient.connect(connectionURL, {useNewUrlParser: true}, (error, client) =>{
     console.log('Connect correct');
 
     const db = client.db(databaseName);
+    // inserimento di un utente
     db.collection('users').insertOne({
         name: 'Luke',
         lastname : 'Skywalker',
