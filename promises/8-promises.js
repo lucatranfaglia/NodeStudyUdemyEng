@@ -1,7 +1,7 @@
 const doWorkPromises = new Promise ((resolve, reject) =>{
     setTimeout(() =>{
        
-        // resolve([1,4,7])                 // se ritorno resolve entra nel THEN => Success:  [ 1, 4, 7 ]
+        resolve([1,4,7])                 // se ritorno resolve entra nel THEN => Success:  [ 1, 4, 7 ]
         reject('Things went Wrong!')        // se ritorno resolve entra nel CATCH => Error:  Things went Wrong!
     }, 2000)
 })
