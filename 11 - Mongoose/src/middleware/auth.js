@@ -6,16 +6,8 @@ const auth = async(req, res, next) => {
     // l'utente deve fornire nell'intestazione il token valido
     try {
 
-        console.log("req auth: ", req.header('Authorization'));
         const token = req.header('Authorization').replace('Bearer', '');
-
-        console.log("token auth: ", token);
-
         const decoded = jwt.verify(token, 'testoacaso');
-
-        console.log("decoded auth: ", decoded);
-
-        console.log("user auth: ", decoded._id, token);
         const user = await User.findOne({ _id: decoded._id, 'tokens.token': token });
 
         if (!user) {
@@ -24,6 +16,9 @@ const auth = async(req, res, next) => {
 
         // salvo le info dell'utente autenticato nel req
         req.user = user;
+
+        // salvo il token nel req
+        req.token = token;
         next();
 
     } catch (error) {

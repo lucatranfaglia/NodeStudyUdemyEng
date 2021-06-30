@@ -32,6 +32,41 @@ router.post('/users/login', async(req, res) => {
     }
 })
 
+// Sostituisce l'ultimo token (autentico) con uno vecchio, così da fare il logout
+router.post('/users/logout', auth, async(req, res) => {
+    try {
+
+        req.user.tokens = req.user.tokens.filter((token) => {
+            return token.token !== req.token;
+        })
+
+        await req.user.save();
+
+        res.send();
+    } catch (e) {
+        console.log("error: ", e);
+        res.status(500).send();
+    }
+})
+
+
+// Rimuove tutti i token dallo user
+router.post('/users/logoutAll', auth, async(req, res) => {
+    try {
+
+        req.user.tokens = req.user.tokens.filter((token) => {
+            return token.token !== req.token;
+        })
+
+        await req.user.save();
+
+        res.send();
+    } catch (e) {
+        console.log("error: ", e);
+        res.status(500).send();
+    }
+})
+
 router.get('/users', async(req, res) => {
     try {
         const users = await User.find({})
