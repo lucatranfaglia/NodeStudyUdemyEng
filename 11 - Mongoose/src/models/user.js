@@ -67,6 +67,36 @@ userSchema.methods.generateAuthToken = async function() {
 }
 
 
+// CREO UN METODO per singola istanza (con nome getPubicProfile) che viena aggiunto al modello User
+// NB -> funzione SINCRONA: ritorna un object con le informazioni filtrare dell'utente
+userSchema.methods.getPubicProfile = function() {
+    // Ottengo le info dello user
+    // user è un object
+    // user._id è un intero
+    const user = this;
+    const userObject = user.toObject();
+    delete userObject.password;
+    delete userObject.tokens;
+    return userObject;
+}
+
+
+// CREO UN METODO per singola istanza che viena aggiunto al modello User
+// in questo caso questo metodo viene eseguito senza essere richiamato, ogni volta che si lavoro con user
+// NB -> funzione SINCRONA: ritorna un object con le informazioni filtrare dell'utente
+userSchema.methods.toJSON = function() {
+    // Ottengo le info dello user
+    // user è un object
+    // user._id è un intero
+    const user = this;
+    const userObject = user.toObject();
+    delete userObject.password;
+    delete userObject.tokens;
+
+
+    return userObject;
+}
+
 // CREO un Middlewere (con nome findByCredentials) che viena aggiunto al modello User
 // 1. verifico l'esistenza della email nel db
 // 2. verifica che la password, inserita dall'utente, sia uguale a quella salvata nel db
